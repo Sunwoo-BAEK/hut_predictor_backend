@@ -46,7 +46,7 @@ def predict_price(hours: int) -> list:
     future_prices.index.name = "DateTime"
     future_prices.reset_index(inplace=True)
     future_prices["HUT_Close"] = future_prices["HUT_Close"].round(2)
-    future_prices["DateTime"] = future_prices["DateTime"].dt.strftime("%Y-%m-%d %H:%M:%S") # what does this do?
+    # future_prices["DateTime"] = future_prices["DateTime"].dt.strftime("%Y-%m-%d %H:%M:%S") # what does this do?
 
     print("Predictions:")
     print(future_prices.head(hours))
@@ -103,3 +103,5 @@ def get_data():
     df_scaled = pd.DataFrame(scaler.transform(df[features]), columns=features, index=df.index)
 
     return df_scaled
+
+print(predict_price(21))
