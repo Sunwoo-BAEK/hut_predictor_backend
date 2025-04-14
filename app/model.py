@@ -10,21 +10,18 @@ model = load_model("app/binaries/hut_model.h5")
 scaler = joblib.load("app/binaries/hut_scaler.pkl")
 
 def predict_price(hours: int) -> list:
+
+    print(hours)
+    print(type(hours))
+    if not isinstance(hours, int):
+        raise ValueError(f"Expected an integer for hours, but got {type(hours)}.")
     
     # Get data
     df_scaled = get_data()
-
-    print("Data shape:", df_scaled.shape)
-
     X = create_sequence(df_scaled)
-
-    print("Input shape:", X.shape)
 
     # Make predictions
     y_pred = model.predict(X)
-
-    print("Predictions shape:", y_pred.shape)
-    print("Predictions:", y_pred)
 
     # Create dummy array of same shape expected by scaler
     padded = np.zeros((21, 8))  # 21 samples, 8 features
@@ -35,7 +32,6 @@ def predict_price(hours: int) -> list:
 
     # Extract only the column we care about (closing price)
     future_predictions = unscaled[:, 0]
-
     requested_predictions = future_predictions[:hours]
 
     # Get future market hours
@@ -46,10 +42,8 @@ def predict_price(hours: int) -> list:
     future_prices.index.name = "DateTime"
     future_prices.reset_index(inplace=True)
     future_prices["HUT_Close"] = future_prices["HUT_Close"].round(2)
-    # future_prices["DateTime"] = future_prices["DateTime"].dt.strftime("%Y-%m-%d %H:%M:%S") # what does this do?
 
-    print("Predictions:")
-    print(future_prices.head(hours))
+    print("Predicted!")
 
     return future_prices.to_dict(orient="records")
 
@@ -97,11 +91,6 @@ def get_data():
         'BTC_return_6h', 'BTC_EMA_9'
     ]
 
-    print("Data:")
-    print(df.describe())
-
     df_scaled = pd.DataFrame(scaler.transform(df[features]), columns=features, index=df.index)
 
     return df_scaled
-
-print(predict_price(21))

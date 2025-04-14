@@ -3,11 +3,11 @@ from typing import List
 from datetime import datetime
 
 class PredictRequest(BaseModel):
-    hours: int  # e.g., 1–21
+    hours: int
 
 class PredictionResult(BaseModel):
     DateTime: datetime
-    HUT_Close: float  # float for the predicted HUT_Close value
+    HUT_Close: float
 
 class PredictResponse(BaseModel):
-    predictions: List[PredictionResult]  # A list of PredictionResult dictionaries
+    predictions: List[PredictionResult]

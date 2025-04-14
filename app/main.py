@@ -6,4 +6,11 @@ app = FastAPI()
 
 @app.post("/predict", response_model=PredictResponse)
 def get_prediction(req: PredictRequest):
-    return predict_price(req)
+    hours = req.hours
+    if not isinstance(hours, int):
+        raise ValueError(f"Expected an integer for hours, but got {type(hours)}.")
+
+    preds = predict_price(req.hours)
+    return PredictResponse(predictions=preds)
+
+# Remember, it only works for hours 1 to 21. Error handling is not done.
